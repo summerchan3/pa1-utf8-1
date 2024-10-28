@@ -1,6 +1,6 @@
 Valid ASCII: false
 Uppercased ASCII: "🐩🐶🐕🙊, 😸,🦀 TO 🦮🐀 TO 🐿"
-Length in bytes: 44
+Length in bytes: 47
 Number of code points: 20
 Bytes per code point: 4 4 4 4 1 1 4 1 4 1 1 1 1 4 4 1 1 1 1 4  
 Substring of the first 6 code points: "🐩🐶🐕🙊, "

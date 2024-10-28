@@ -30,7 +30,7 @@ int32_t capitalize_ascii(char str[]) {
     int32_t updated = 0; //counts how many chars updated to uppercase
 
     int index = 0;
-    while(str[index] != 0) {
+    while(str[index] != 0 && str[index] != '\n') {
         
         //if in lowercase ascii range, add 32 to make upper
         //increment updated to keep track of how many chars changed
@@ -116,20 +116,17 @@ void utf8_substring(char str[], int32_t cpi_start, int32_t cpi_end, char result[
         return;
 
     int32_t bi = 0;
-    int32_t bi_start = 0;
-    int32_t bi_end = 0;
+    int32_t bi_start = bi_start = codepoint_index_to_byte_index(str, cpi_start);
+    int32_t bi_end = bi_end = codepoint_index_to_byte_index(str, cpi_end);;
 
-    //subtract one from cpi_end since it is exclusive not inclusive
-    bi_start = codepoint_index_to_byte_index(str, cpi_start);
-    bi_end = codepoint_index_to_byte_index(str, cpi_end - 1) + width_from_start_byte(cpi_end - 1);
-    while (bi < bi_end) { 
-        result[bi] = str[bi_start];
-        bi += 1;
-        bi_start += 1;
+    int result_index = 0;
+    
+    for(bi = bi_start; bi < bi_end; bi++) {
+        result[result_index++] = str[bi];
     }
-
+    
     //prevents running on into memory 
-    result[bi] = 0;
+    result[result_index] = 0;
 }
 
 //returns decimal value of code point index
@@ -185,6 +182,10 @@ int main() {
     //prompt for input
     printf("%s", "Enter a UTF-8 encoded string: ");
     fgets(buffer, 50, stdin);
+    buffer[strcspn(buffer, "\n")] = '\0';
+    for (int i = 0; input[i] != '\0'; i++) {
+        printf("Byte %d: %02x\n", i, (unsigned char)buffer[i]);
+    }
 
     //copy user input to another array since capitalize_ascii
     //will change the array passed in
@@ -195,8 +196,8 @@ int main() {
     printf("Uppercased ASCII: \"%s\"\n", buffer);
 
     while(input[index] != 0) {
-        byte_length += width_from_start_byte(index);
-        index += width_from_start_byte(index);
+        byte_length += width_from_start_byte(input[index]);
+        index += width_from_start_byte(input[index]);
     }
 
     printf("Length in bytes: %d\n", (byte_length));
@@ -206,21 +207,21 @@ int main() {
     //get bi from cpi
     //go to bi in array
     //print byte at that codepoint
-    for(int i = 0; i < utf8_strlen(input); i += 1){
+    for(int i = 0; i < utf8_strlen(input); i ++){
         printf("%d ", width_from_start_byte(input[codepoint_index_to_byte_index(input, i)]));
     }
 
     utf8_substring(input, 0, 6, result);
     printf("\nSubstring of the first 6 code points: \"%s\"\n", result);
     printf("Code points as decimal numbers: ");
-    for(int i = 0; i < utf8_strlen(input); i += 1){
+    for(int i = 0; i < utf8_strlen(input); i ++){
         printf("%d ", codepoint_at(input, i));
     }
 
     printf("\nAnimal emojis: ");
     //if animal emoji, print
     //if not, keep traversing through array
-    for(int i = 0; i < utf8_strlen(input); i+= 1){
+    for(int i = 0; i < utf8_strlen(input); i++){
         if(is_animal_emoji_at(input, i) == 1) {
             utf8_substring(input, i, i + 1, animal_emojis);
             printf("%s ", animal_emojis);
