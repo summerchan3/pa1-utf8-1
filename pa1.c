@@ -1,16 +1,6 @@
-#include <stdint.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <string.h>
-
-// //import functions from pa1.c
-// int32_t is_ascii(char str[]);
-// int32_t capitalize_ascii(char str[]);
-// int32_t width_from_start_byte(char start_byte);
-// int32_t utf8_strlen(char str[]);
-// int32_t codepoint_index_to_byte_index(char str[], int32_t cpi);
-// void utf8_substring(char str[], int32_t cpi_start, int32_t cpi_end, char result[]);
-// int32_t codepoint_at(char str[], int32_t cpi);
-// char is_animal_emoji_at(char str[], int32_t cpi);
 
 //returns 0 if not ascii and 1 if is ascii
 int32_t is_ascii(char str[]) {
@@ -172,60 +162,39 @@ char is_animal_emoji_at(char str[], int32_t cpi) {
     return boolean;
 }
 
-int main() {
-    //declare arrays and ints
-    char buffer[50];  
-    char input[50];
-    char result[50];
-    char animal_emojis[50];
+/*
+ int main() {
+    printf("Is 🔥 ASCII? %d\n", is_ascii("🔥"));
+    printf("Is abcd ASCII? %d\n", is_ascii("abcd"));
 
-    int32_t index = 0;
-    int32_t byte_length = 0;
-    
-    //prompt for input
-    printf("%s", "Enter a UTF-8 encoded string: ");
-    fgets(buffer, 50, stdin);
+    int32_t ret = 0;
+    char str[] = "abcd";
+    ret = capitalize_ascii(str);
+    printf("Capitalized String: %s\nCharacters updated: %d\n", str, ret);
 
-    //copy user input to another array since capitalize_ascii
-    //will change the array passed in
-    strcpy(input, buffer);
+    char s[] = "Héy"; // same as { 'H', 0xC3, 0xA9, 'y', 0 },   é is start byte + 1 cont. byte
+    printf("Width: %d bytes\n", width_from_start_byte(s[1])); // start byte 0xC3 indicates 2-byte sequence
+    printf("Width: %d bytes\n", width_from_start_byte(s[2]));
 
-    printf("\nValid ASCII: %s\n", is_ascii(buffer) ? "true" : "false");
-    capitalize_ascii(buffer);
-    printf("Uppercased ASCII: \"%s\"\n", buffer);
+    char str2[] = "Joséph";
 
-    while(input[index] != 0) {
-        byte_length += width_from_start_byte(index);
-        index += width_from_start_byte(index);
-    }
+    printf("Length of string %s is %d\n", str2, utf8_strlen(str2));
+    int32_t idx = 4;
+    printf("Codepoint index %d is byte index %d\n", idx, codepoint_index_to_byte_index("Joséph", idx));
 
-    printf("Length in bytes: %d\n", (byte_length));
-    printf("Number of code points: %d\n", (utf8_strlen(input)));
-    printf("Bytes per code point: ");
+    char result[17];
+    utf8_substring("🦀🦮🦮🦀🦀🦮🦮", 3, 7, result);
+    printf("String: %s\nSubstring: %s\n", "🦀🦮🦮🦀🦀🦮🦮", result);    
 
-    //get bi from cpi
-    //go to bi in array
-    //print byte at that codepoint
-    for(int i = 0; i < utf8_strlen(input); i += 1){
-        printf("%d ", width_from_start_byte(input[codepoint_index_to_byte_index(input, i)]));
-    }
+    char str4[] = "Joséph";
+    int32_t idx2 = 3;
+    printf("Codepoint at %d in %s is animal? %d\n", idx2, str4, codepoint_at(str4, idx2));
 
-    utf8_substring(input, 0, 6, result);
-    printf("\nSubstring of the first 6 code points: \"%s\"\n", result);
-    printf("Code points as decimal numbers: ");
-    for(int i = 0; i < utf8_strlen(input); i += 1){
-        printf("%d ", codepoint_at(input, i));
-    }
-
-    printf("\nAnimal emojis: ");
-    //if animal emoji, print
-    //if not, keep traversing through array
-    for(int i = 0; i < utf8_strlen(input); i+= 1){
-        if(is_animal_emoji_at(input, i) == 1) {
-            utf8_substring(input, i, i + 1, animal_emojis);
-            printf("%s ", animal_emojis);
-        } 
-    }
-    printf("\n"); 
+    char strE[] = "🦀🐀🦮🐿️";
+    int32_t idx3 = 2;
+    printf("Codepoint at %d in %s is %d\n", idx3, strE, codepoint_at(strE, idx3));
+    printf("Codepoint at %d in %s is %d\n", idx3, strE, is_animal_emoji_at(strE, idx3));
+    printf("Codepoint at %d in %s is %d\n", idx2, str4, is_animal_emoji_at(str4, idx2));
+   
     return 0;
-}
+} */
