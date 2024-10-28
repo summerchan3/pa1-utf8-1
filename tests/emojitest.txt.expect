@@ -6,3 +6,4 @@ Bytes per code point: 4 4 4 4 1 1 4 1 4 1 1 1 1 4 4 1 1 1 1 4
 Substring of the first 6 code points: "🐩🐶🐕🙊, "
 Code points as decimal numbers: 128041 128054 128021 128586 44 32 128568 44 129408 32 116 111 32 129454 128000 32 116 111 32 128063 
 Animal emojis: 🐩🐶🐕🙊🦀🦮🐀🐿
+Next Character of Codepoint at Index 3: 🐖

@@ -168,6 +168,35 @@ char is_animal_emoji_at(char str[], int32_t cpi) {
         boolean = 1;
     return boolean;
 }
+void next_utf8_char(char str[], int32_t cpi, char result[]) {
+    int codepoint = codepoint_at(str, cpi);
+    codepoint++;
+     
+    if (codepoint <= 0x7F) { // 1 byte
+        result[0] = (char)codepoint;
+        result[1] = '\0';
+    } else if (codepoint <= 0x7FF) { // 2 bytes
+        result[0] = 0xC0 | (codepoint >> 6);
+        result[1] = 0x80 | (codepoint & 0x3F);
+        result[2] = '\0';
+    } else if (codepoint <= 0xFFFF) { // 3 bytes
+        result[0] = 0xE0 | (codepoint >> 12);
+        result[1] = 0x80 | ((codepoint >> 6) & 0x3F);
+        result[2] = 0x80 | (codepoint & 0x3F);
+    } else if (codepoint <= 0x10FFFF) { // 4 bytes
+        result[0] = 0xF0 | (codepoint >> 18);
+        result[1] = 0x80 | ((codepoint >> 12) & 0x3F);
+        result[2] = 0x80 | ((codepoint >> 6) & 0x3F);
+        result[3] = 0x80 | (codepoint & 0x3F);
+        result[4] = '\0';
+    }
+
+    int32_t byte_index = codepoint_index_to_byte_index(str, cpi);
+    int32_t current_width = width_from_start_byte(str[byte_index]);
+    
+
+    return 0;
+}
 
 int main() {
     //declare arrays and ints
@@ -214,7 +243,7 @@ int main() {
     utf8_substring(input, 0, 6, result);
     printf("\nSubstring of the first 6 code points: \"%s\"\n", result);
     printf("Code points as decimal numbers: ");
-    for(int i = 0; i < utf8_strlen(input); i ++){
+    for(int i = 0; i < utf8_strlen(input); i++){
         printf("%d ", codepoint_at(input, i));
     }
 
@@ -228,5 +257,9 @@ int main() {
         } 
     }
     printf("\n"); 
+    char next_char[50];
+    int32_t idx = 3;
+    next_utf8_char(input, idx, next_char);
+    printf("Next Character of Codepoint at Index 3: %s", next_char);
     return 0;
 }
