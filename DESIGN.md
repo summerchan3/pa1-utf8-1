@@ -1,0 +1,7 @@
+In UTF-8, it encodes U+0021 which is this character: !.
+
+Three other ways to encode ! include using different byte lengths. Since ! is a normal ASCII character, it can fit into a 1 byte sequence, which would be 00100001, or 0x31. If it were encoded as a 2 byte sequence, it would be 11000000 10100001, or 0xC0 0x31. If it were encoded as a 4 byte sequence, it would be 11110000 10000000 10000000 10100001, or 0xF0 0x80 0x80 0x31.
+
+One character that has exactly 3 encodings would be é since it requires 2 bytes at minimum. The other two ways to encode é would be through a 3 byte and 4 byte sequence. 
+
+Some issues with having multiple encodings is many programs rely on using the shortest form. If a program is searching for a specific char but it is represented as an overlong UTF8 encoding, it is possible that the program will overlook the char since it is only programmed to look for the shortest version. This can cause issues with security as users may be able to access files they are not supposed to. It can also cause buffer overflow. If byte length and character length are not considered but a program considers character length but processes data using bytes, there is a possibility for memory corruption or faulty code execution.
