@@ -168,6 +168,8 @@ char is_animal_emoji_at(char str[], int32_t cpi) {
         boolean = 1;
     return boolean;
 }
+
+//takes char and outputs next char in utf8 encoding
 void next_utf8_char(char str[], int32_t cpi, char result[]) {
     int codepoint = codepoint_at(str, cpi);
     codepoint++;
@@ -190,20 +192,15 @@ void next_utf8_char(char str[], int32_t cpi, char result[]) {
         result[3] = 0x80 | (codepoint & 0x3F);
         result[4] = '\0';
     }
-
-    int32_t byte_index = codepoint_index_to_byte_index(str, cpi);
-    int32_t current_width = width_from_start_byte(str[byte_index]);
     
-
-    return 0;
 }
 
 int main() {
     //declare arrays and ints
-    char buffer[50];  
-    char input[50];
-    char result[50];
-    char animal_emojis[50];
+    char buffer[100];  
+    char input[100];
+    char result[100];
+    char animal_emojis[100];
 
     int32_t index = 0;
     int32_t byte_length = 0;
@@ -211,15 +208,24 @@ int main() {
     //prompt for input
     printf("%s", "Enter a UTF-8 encoded string: ");
     fgets(buffer, 50, stdin);
-    buffer[strcspn(buffer, "\n")] = '\0';
-    for (int i = 0; input[i] != '\0'; i++) {
-        printf("Byte %d: %02x\n", i, (unsigned char)buffer[i]);
-    }
+    //printf("%s \n", buffer);
+    
+    //debugging
+    // for (int i = 0; input[i] != '\0'; i++) {
+    //     printf("Byte %d: %02x\n", i, (unsigned char)buffer[i]);
+    // }
 
     //copy user input to another array since capitalize_ascii
     //will change the array passed in
+    
     strcpy(input, buffer);
 
+    for(int i = 0; i < 1000; i++) {
+        if(buffer[i] >= 250) {
+            buffer[i] = 0;
+        }
+    }
+    
     printf("\nValid ASCII: %s\n", is_ascii(buffer) ? "true" : "false");
     capitalize_ascii(buffer);
     printf("Uppercased ASCII: \"%s\"\n", buffer);
@@ -261,5 +267,20 @@ int main() {
     int32_t idx = 3;
     next_utf8_char(input, idx, next_char);
     printf("Next Character of Codepoint at Index 3: %s", next_char);
+    printf("\n"); 
     return 0;
 }
+
+/* 
+input: 🐩🐶🐕🙊, 😸,🦀 to 🦮🐀 to 🐿️
+
+output: Valid ASCII: false
+Uppercased ASCII: "🐩🐶🐕🙊, 😸,🦀 TO 🦮🐀 TO 🐿�"
+Length in bytes: 50
+Number of code points: 21
+Bytes per code point: 4 4 4 4 1 1 4 1 4 1 1 1 1 4 4 1 1 1 1 4 3 
+Substring of the first 6 code points: "🐩🐶🐕🙊, "
+Code points as decimal numbers: 128041 128054 128021 128586 44 32 128568 44 129408 32 116 111 32 129454 128000 32 116 111 32 128063 65024 
+Animal emojis: 🐩 🐶 🐕 🦀 🦮 🐀 🐿 
+Next Character of Codepoint at Index 3: 🙋
+*/

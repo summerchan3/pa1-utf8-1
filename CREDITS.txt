@@ -1,0 +1,68 @@
+The prompt that I gave to ChatGPT: i want to get a codepoint, then add 1 and store the new codepoint in the array, how would i do that?
+
+The code it gave me:
+int32_t codepoint_to_utf8(int32_t codepoint, char result[]) {
+    if (codepoint <= 0x7F) { // 1 byte
+        result[0] = (char)codepoint;
+        result[1] = '\0';
+        return 1;
+    } else if (codepoint <= 0x7FF) { // 2 bytes
+        result[0] = 0xC0 | (codepoint >> 6);
+        result[1] = 0x80 | (codepoint & 0x3F);
+        result[2] = '\0';
+        return 2;
+    } else if (codepoint <= 0xFFFF) { // 3 bytes
+        result[0] = 0xE0 | (codepoint >> 12);
+        result[1] = 0x80 | ((codepoint >> 6) & 0x3F);
+        result[2] = 0x80 | (codepoint & 0x3F);
+        result[3] = '\0';
+        return 3;
+    } else if (codepoint <= 0x10FFFF) { // 4 bytes
+        result[0] = 0xF0 | (codepoint >> 18);
+        result[1] = 0x80 | ((codepoint >> 12) & 0x3F);
+        result[2] = 0x80 | ((codepoint >> 6) & 0x3F);
+        result[3] = 0x80 | (codepoint & 0x3F);
+        result[4] = '\0';
+        return 4;
+    }
+    return 0; // Invalid code point
+}
+
+and also 
+
+void increment_codepoint(char str[], int32_t cpi) {
+    // Get the current code point
+    int32_t current_codepoint = codepoint_at(str, cpi);
+    
+    // Increment the code point
+    current_codepoint++;
+
+    // Convert the new code point to UTF-8
+    char new_utf8[5]; // Max 4 bytes + null terminator
+    int32_t new_length = codepoint_to_utf8(current_codepoint, new_utf8);
+
+    // Calculate the byte index for the current code point
+    int32_t byte_index = codepoint_index_to_byte_index(str, cpi);
+
+    // Replace the current UTF-8 bytes with the new UTF-8 bytes
+    int32_t current_width = width_from_start_byte(str[byte_index]);
+    
+    // If the new length is the same, just overwrite
+    if (new_length == current_width) {
+        for (int32_t i = 0; i < new_length; i++) {
+            str[byte_index + i] = new_utf8[i];
+        }
+    } else {
+        // If the new length is different, handle insertion/removal
+        // (This requires shifting the rest of the string)
+        memmove(str + byte_index + new_length, str + byte_index + current_width, strlen(str) - (byte_index + current_width) + 1);
+        for (int32_t i = 0; i < new_length; i++) {
+            str[byte_index + i] = new_utf8[i];
+        }
+    }
+}
+
+I didn't change the body of the first function but I did incorporate some of the logic from the second function.
+I wanted to avoid using 2 functions so I incremented the codepoint that was passed into the function
+instead of having a whole new function to do it. I had given the prompt so that I could compare the logic that I was 
+using to the logic that it would give. I had similar logic, but was missing using the & 3F in the comparisons. 
